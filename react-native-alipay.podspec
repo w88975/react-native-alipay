@@ -38,10 +38,34 @@ Pod::Spec.new do |s|
 
   # s.dependency "React"
   s.dependency "React-Core"
+  s.resource = 'ios/bundle'
   s.resource = 'ios/AlipaySDK.bundle'
   # s.vendored_libraries = "libAlipaySDK.a"
   # s.source_files  = "AlipaySDKiOS/AlipaySDK.framework/**/*"
-  s.vendored_frameworks = 'ios/AlipaySDK.framework'
+  
+  # 阿里百川sdk
+  s.vendored_frameworks = [
+  'ios/framework/AlibcLinkPartnerSDK.framework',
+  'ios/framework/AlibcTradeSDK/AlibcTradeSDK.framework',
+  'ios/framework/mtopSDK/mtopcoreopen.framework',
+  'ios/framework/mtopSDK/mtopext.framework',
+  'ios/framework/mtopSDK/MtopSDK.framework',
+  'ios/framework/AlibcTradeSDK/AlibcTradeBiz.framework',
+  'ios/framework/securityGuard/SGMain.framework',
+  'ios/framework/securityGuard/SGMiddleTier.framework',
+  'ios/framework/securityGuard/SGSecurityBody.framework',
+  'ios/framework/securityGuard/SGIndieKit.framework',
+  'ios/framework/securityGuard/SecurityGuardSDK.framework',
+  'ios/framework/securityGuard/SGNoCaptcha.framework',
+  'ios/framework/UTMini.framework',
+  'ios/framework/WindVane/WindVane.framework',
+  'ios/framework/WindVane/WindVaneBasic.framework',
+  'ios/framework/WindVane/WindVaneCore.framework',
+  'ios/framework/AliAuthSDK/AlibabaAuthExt.framework',
+  'ios/framework/AliAuthSDK/AlibabaAuthSDK.framework',
+  'ios/framework/AliAuthSDK/AlibabaAuthEntrance.framework',
+  'ios/AlipaySDK.framework'
+]
   s.library = "c++", "z"
   # ...
   # s.dependency "..."

@@ -1,6 +1,6 @@
 #import "RNAlipay.h"
 #import <AlipaySDK/AlipaySDK.h>
-
+#import <AlibcTradeSDK/AlibcTradeSDK.h>
 
 @interface RNAlipay ()
 @property (nonatomic, copy) RCTPromiseResolveBlock payOrderResolve;
@@ -101,6 +101,23 @@ RCT_EXPORT_METHOD(authInfo:(NSString *)info resolver:(RCTPromiseResolveBlock)res
 
 RCT_EXPORT_METHOD(getVersion: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     resolve([[AlipaySDK defaultService] currentVersion]);
+}
+
+// TODO: 初始化SDK的时候需要传版本号和appName
+RCT_EXPORT_METHOD(initBCSdk: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    // 百川平台基础SDK初始化，加载并初始化各个业务能力插件
+    [[AlibcTradeSDK sharedInstance] setDebugLogOpen:YES];//开发阶段打开日志开关，方便排查错误信息
+    
+    [[AlibcTradeSDK sharedInstance] setIsvVersion:@"2.2.2"];
+    [[AlibcTradeSDK sharedInstance] setIsvAppName:@"baichuanDemo"];
+    [[AlibcTradeSDK sharedInstance] asyncInitWithSuccess:^{
+        //      openSDKSwitchLog(NO);
+        TLOG_INFO(@"百川SDK初始化成功");
+        resolve(YES);
+    } failure:^(NSError *error) {
+        TLOG_INFO(@"百川SDK初始化失败");
+        resolve(error);
+    }];
 }
 
 /*! 
