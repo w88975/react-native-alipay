@@ -3,11 +3,24 @@
 #import <AlibcTradeUltimateSDK/AlibcTradeUltimateSDK.h>
 #import <WVURLProtocolService.h>
 
-
 @interface RNAlipay ()
 @property (nonatomic, copy) RCTPromiseResolveBlock payOrderResolve;
 
 @end
+
+@implementation UIViewController (TopMostViewController)
++ (UIViewController*)topMostViewController {
+    UIViewController *topViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+
+    return topViewController;
+}
+@end
+
+
 @implementation RNAlipay
 {
     NSString *alipayScheme;
@@ -127,34 +140,25 @@ RCT_EXPORT_METHOD(initBCSdk: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
     }];
 }
 
-RCT_EXPORT_METHOD(OpenTB: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    [WVURLProtocolService setSupportWKURLProtocol:YES];
-    UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
 
-    [[AlibcTradeUltimateSDK sharedInstance].tradeService authorize4AppKey:@"34686816" appName:@"省钱通" appLogo:nil currentVC:rootViewController callBack:^(NSError *error, NSString *accessToken, NSString *expire) {
-         NSLog(@"%@ - %@",accessToken,expire);
-    }];
-    
-//    // 登录
-//    if (![[[AlibcTradeUltimateSDK sharedInstance] loginService] isLogin]) {
-//        [[[AlibcTradeUltimateSDK sharedInstance] loginService] setH5Only:YES];
-//        [[[AlibcTradeUltimateSDK sharedInstance] loginService] auth:rootViewController success:^(AlibcUser *user) {
-//            NSLog(@"登录成功");
-//            resolve(@"登录成功");
-//            [WVURLProtocolService setSupportWKURLProtocol:NO];
-//        } failure:^(NSError *error) {
-//            NSLog(@"登录失败");
-//            resolve(@"");
-//            [WVURLProtocolService setSupportWKURLProtocol:NO];
-//        }];
-//    } else {
-//        AlibcUser *userInfo = [[[AlibcTradeUltimateSDK sharedInstance] loginService] getUser];
-//        NSLog(@"已登录");
-//        resolve(@"已登录");
-//        [WVURLProtocolService setSupportWKURLProtocol:NO];
-//        //  resolve([userInfo topAccessToken]);
-//    }
-    
+
+RCT_EXPORT_METHOD(OpenTB: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+            UIViewController *viewController = [UIViewController topMostViewController];
+            // 调用第三方SDK方法，传递viewController
+        [[[AlibcTradeUltimateSDK sharedInstance] loginService] logout];
+        [[AlibcTradeUltimateSDK sharedInstance].tradeService authorize4AppKey:@"34686816" appName:@"省钱通" appLogo:nil currentVC:viewController callBack:^(NSError *error, NSString *accessToken, NSString *expire) {
+            NSLog(@"%@ - %@",accessToken,expire);
+            resolve(accessToken);
+        }];
+        });
+    // 必须要传rootViewController
+//    UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+//    [[[AlibcTradeUltimateSDK sharedInstance] loginService] logout];
+//    [[AlibcTradeUltimateSDK sharedInstance].tradeService authorize4AppKey:@"34686816" appName:@"省钱通" appLogo:nil currentVC:rootViewController callBack:^(NSError *error, NSString *accessToken, NSString *expire) {
+//        NSLog(@"%@ - %@",accessToken,expire);
+//        resolve(accessToken);
+//    }];
 }
 
 RCT_EXPORT_METHOD(openTb: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
