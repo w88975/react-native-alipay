@@ -7,7 +7,7 @@ const LINKING_ERROR =
   '- You are not using Expo managed workflow\n';
 
 console.log(':::NativeModules:::', NativeModules.RNAlipay)
-const RNAlipay = NativeModules.RNAlipay ? NativeModules.RNAlipay  : new Proxy(
+const RNAlipay = NativeModules.RNAlipay ? NativeModules.RNAlipay : new Proxy(
   {},
   {
     get() {
@@ -65,6 +65,20 @@ export default class Alipay {
   static setAlipaySandbox(isSandBox) {
     if (Platform.OS === 'android') {
       NativeModules.RNAlipay.setAlipaySandbox(isSandBox);
+    }
+  }
+
+  /**
+   * 初始化阿里百川sdk
+   * @param version app版本
+   * @param app_name app名称
+   * @platform android
+   */
+  static initBCSdk(version, app_name) {
+    if (Platform.OS === 'android') {
+      console.log('安卓暂未支持')
+    } else if (Platform.OS === 'ios') {
+      NativeModules.RNAlipay.initBCSdk(version, app_name)
     }
   }
 }

@@ -116,7 +116,7 @@ RCT_EXPORT_METHOD(initBCSdk: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
         resolve(YES);
     } failure:^(NSError *error) {
         TLOG_INFO(@"百川SDK初始化失败");
-        resolve(error);
+        resolve(NO);
     }];
 }
 
