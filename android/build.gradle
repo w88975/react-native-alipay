@@ -71,6 +71,9 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
 
+    // 导入阿里百川的aar包，在libs目录
+    implementation fileTree(dir: 'libs', includes: ['*.jar', '*.aar'])
+    
     // 支付宝 SDK AAR 包所需的配置
     implementation 'com.alipay.sdk:alipaysdk-android:15.8.10@aar'
     implementation fileTree(dir: "libs", include: ["*.aar"])
