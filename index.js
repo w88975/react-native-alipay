@@ -74,11 +74,39 @@ export default class Alipay {
    * @param app_name app名称
    * @platform android
    */
-  static initBCSdk(version, app_name) {
+  static initBCSdk() {
     if (Platform.OS === 'android') {
-      console.log('安卓暂未支持')
+      return NativeModules.RNAlipay.initBCSdk()
     } else if (Platform.OS === 'ios') {
-      NativeModules.RNAlipay.initBCSdk(version, app_name)
+      return NativeModules.RNAlipay.initBCSdk()
+    }
+  }
+
+  /**
+ * 阿里百川淘宝授权
+ * @param callback 授权回调
+ * @platform android
+ */
+  static OpenTB(callback) {
+    if (Platform.OS === 'android') {
+      NativeModules.RNAlipay.OpenTB(callback)
+    } else if (Platform.OS === 'ios') {
+      console.log('ios暂未支持')
+    }
+  }
+
+  /**
+* 阿里百川打开返利商品链接
+* @param url
+* @param pid
+* @param relationId
+* @platform android
+*/
+  static openTb(url, pid, relationId) {
+    if (Platform.OS === 'android') {
+      NativeModules.RNAlipay.openTb(url, pid, relationId)
+    } else if (Platform.OS === 'ios') {
+      console.log('ios暂未支持')
     }
   }
 }

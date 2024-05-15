@@ -10,39 +10,39 @@ export interface OrderResultStr {
     /**
      * 长度：64，商户网站唯一订单号	70501111111S001111119
      */
-    out_trade_no: string;  
+    out_trade_no: string;
     /**
      * 长度：64，该交易在支付宝系统中的交易流水号。最长64位。	2014112400001000340011111118
      */
-    trade_no: string;      
+    trade_no: string;
     /**
      * 长度：32，支付宝分配给开发者的应用Id。	2014072300007148
      */
-    app_id: string;        
+    app_id: string;
     /**
      * 长度：9	，该笔订单的资金总额，单位为RMB-Yuan。取值范围为[0.01,100000000.00]，精确到小数点后两位。	9.00
      */
-    total_amount: number;  
+    total_amount: number;
     /**
      * 长度：16，收款支付宝账号对应的支付宝唯一用户号。以2088开头的纯16位数字	20886894
      */
-    seller_id: string;    
+    seller_id: string;
     /**
      * 长度：16，处理结果的描述，信息来自于code返回结果的描述	success
      */
-    msg: string;          
+    msg: string;
     /**
      * 长度：16，编码格式	utf-8
      */
-    charset: string;      
+    charset: string;
     /**
      * 长度：32，时间	2016-10-11 17:43:36
      */
-    timestamp: string;    
+    timestamp: string;
     /**
      * 长度：16，结果码	具体见公共错误码
      */
-    code: string;         
+    code: string;
   },
   sign: string;
   sign_type: 'RSA2' | 'RSA';
@@ -113,7 +113,7 @@ export interface AuthResult {
    * - `auth_code` 表示授权成功的授码。
    * @example `success=true&auth_code=9c11732de44f4f1790b63978b6fbOX53&result_code=200&alipay_open_id=20881001757376426161095132517425&user_id=2088003646494707`
    */
-  result:	string; 
+  result: string;
   /**
    * 长度：5，本次操作的状态返回值，标识本次调用的结果，参见“resultStatus状态代码”。
    * - 9000	请求处理成功
@@ -121,11 +121,11 @@ export interface AuthResult {
    * - 6001	用户中途取消
    * - 6002	网络连接出错
    */
-  resultStatus:	'9000' | '4000' | '6001' | '6002'; 
+  resultStatus: '9000' | '4000' | '6001' | '6002';
   /**
    * 长度：无，保留参数，一般无内容。	处理成功
    */
-  memo:	string; 
+  memo: string;
 }
 /**
  * 支付
@@ -159,3 +159,33 @@ export function setAlipayScheme(scheme: string): void;
  * @platform android
  */
 export function setAlipaySandbox(isSandbox: boolean): void;
+
+
+
+
+
+// 阿里百川SDK相关函数
+
+/**
+ * 初始化阿里百川sdk
+ * @param version app版本
+ * @param app_name app名称
+ * @platform android
+ */
+export function initBCSdk();
+
+/**
+* 阿里百川淘宝授权
+* @param callback 授权回调
+* @platform android
+*/
+export function OpenTB(callback: Function);
+
+/**
+* 阿里百川打开返利商品链接
+* @param url
+* @param pid
+* @param relationId
+* @platform android
+*/
+export function openTb(url: string, pid: string, relationId: string);
