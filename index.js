@@ -92,6 +92,7 @@ export default class Alipay {
       NativeModules.RNAlipay.OpenTB(callback)
     } else if (Platform.OS === 'ios') {
       console.log('ios暂未支持')
+      NativeModules.RNAlipay.OpenTB()
     }
   }
 

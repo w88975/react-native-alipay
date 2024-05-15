@@ -1,6 +1,8 @@
 #import "RNAlipay.h"
 #import <AlipaySDK/AlipaySDK.h>
-#import <AlibcTradeSDK/AlibcTradeSDK.h>
+#import <AlibcTradeUltimateSDK/AlibcTradeUltimateSDK.h>
+#import <WVURLProtocolService.h>
+
 
 @interface RNAlipay ()
 @property (nonatomic, copy) RCTPromiseResolveBlock payOrderResolve;
@@ -49,7 +51,7 @@ RCT_EXPORT_MODULE()
                 weakSelf.payOrderResolve = nil;
             }
         }];
-
+        
         /**
          *  处理支付宝app授权后跳回商户app携带的授权结果Url
          *
@@ -105,19 +107,79 @@ RCT_EXPORT_METHOD(getVersion: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromi
 
 // TODO: 初始化SDK的时候需要传版本号和appName
 RCT_EXPORT_METHOD(initBCSdk: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
     // 百川平台基础SDK初始化，加载并初始化各个业务能力插件
-    [[AlibcTradeSDK sharedInstance] setDebugLogOpen:YES];//开发阶段打开日志开关，方便排查错误信息
-    
-    [[AlibcTradeSDK sharedInstance] setIsvVersion:@"2.2.2"];
-    [[AlibcTradeSDK sharedInstance] setIsvAppName:@"baichuanDemo"];
-    [[AlibcTradeSDK sharedInstance] asyncInitWithSuccess:^{
-        //      openSDKSwitchLog(NO);
-        TLOG_INFO(@"百川SDK初始化成功");
-        resolve(YES);
-    } failure:^(NSError *error) {
-        TLOG_INFO(@"百川SDK初始化失败");
-        resolve(NO);
+    [[AlibcTradeUltimateSDK sharedInstance]  asyncInitWithSuccess:^{
+        NSLog(@"百川初始化成功");
+        resolve(@YES);
+        [WVURLProtocolService setSupportWKURLProtocol:NO];
+        [[AlibcTradeUltimateSDK sharedInstance] enableAutoShowDebug:YES];
+        [[AlibcTradeUltimateSDK sharedInstance] setDebugLogOpen:YES];
+        //2.手动打开自检工具（参数为任何当前页面VC，建议是百川套件打开前的VC）
+        [[AlibcTradeUltimateSDK sharedInstance] showLocalDebugTool:rootViewController];
+#ifdef DEBUG
+        //必须在百川初始化成功之后调用，开启自检工具的悬浮入口
+        
+#endif
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"百川初始化失败");
+        resolve(@NO);
     }];
+}
+
+RCT_EXPORT_METHOD(OpenTB: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [WVURLProtocolService setSupportWKURLProtocol:YES];
+    UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+
+    [[AlibcTradeUltimateSDK sharedInstance].tradeService authorize4AppKey:@"34686816" appName:@"省钱通" appLogo:nil currentVC:rootViewController callBack:^(NSError *error, NSString *accessToken, NSString *expire) {
+         NSLog(@"%@ - %@",accessToken,expire);
+    }];
+    
+//    // 登录
+//    if (![[[AlibcTradeUltimateSDK sharedInstance] loginService] isLogin]) {
+//        [[[AlibcTradeUltimateSDK sharedInstance] loginService] setH5Only:YES];
+//        [[[AlibcTradeUltimateSDK sharedInstance] loginService] auth:rootViewController success:^(AlibcUser *user) {
+//            NSLog(@"登录成功");
+//            resolve(@"登录成功");
+//            [WVURLProtocolService setSupportWKURLProtocol:NO];
+//        } failure:^(NSError *error) {
+//            NSLog(@"登录失败");
+//            resolve(@"");
+//            [WVURLProtocolService setSupportWKURLProtocol:NO];
+//        }];
+//    } else {
+//        AlibcUser *userInfo = [[[AlibcTradeUltimateSDK sharedInstance] loginService] getUser];
+//        NSLog(@"已登录");
+//        resolve(@"已登录");
+//        [WVURLProtocolService setSupportWKURLProtocol:NO];
+//        //  resolve([userInfo topAccessToken]);
+//    }
+    
+}
+
+RCT_EXPORT_METHOD(openTb: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+    
+    AlibcTradeTaokeParams *taokeParam;
+    taokeParam.pid=@"mm_6252336851_3085800123_115679650219";
+    taokeParam.relationId=@"3069901877";
+    
+    AlibcTradeShowParams *showParams;
+    showParams.backUrl=@"alisdk://";
+    showParams.isNeedOpenByAliApp=YES;
+    
+    NSDictionary * trackParams;
+    
+    
+    [[AlibcTradeUltimateSDK sharedInstance].tradeService
+             openTradeUrl:@"https://s.click.taobao.com/nzycent"
+             parentController:rootViewController
+             showParams:showParams
+             taoKeParams:taokeParam
+             trackParam:trackParams
+             openUrlCallBack:^(NSError *_Nonnull error,NSDictionary *result) {
+
+          }];
 }
 
 /*! 

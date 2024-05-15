@@ -38,35 +38,96 @@ Pod::Spec.new do |s|
 
   # s.dependency "React"
   s.dependency "React-Core"
-  s.resource = 'ios/bundle'
-  s.resource = 'ios/AlipaySDK.bundle'
+
+  # 阿里百川电商套件依赖
+  s.dependency "Masonry"
+  s.dependency "FMDB"
+  s.dependency "Reachability"
+  s.dependency "SocketRocket"
+  s.dependency "SSZipArchive"
+  s.dependency "SDWebImage"
+
+  s.resource = ['ios/bundle/*', 'ios/resource/*', 'ios/AlipaySDK.bundle']
+  # s.resource = 'ios/resource'
+  # s.resource = 'ios/AlipaySDK.bundle'
   # s.vendored_libraries = "libAlipaySDK.a"
   # s.source_files  = "AlipaySDKiOS/AlipaySDK.framework/**/*"
   
   # 阿里百川sdk
-  s.vendored_frameworks = [
-  'ios/framework/AlibcLinkPartnerSDK.framework',
-  'ios/framework/AlibcTradeSDK/AlibcTradeSDK.framework',
-  'ios/framework/mtopSDK/mtopcoreopen.framework',
-  'ios/framework/mtopSDK/mtopext.framework',
-  'ios/framework/mtopSDK/MtopSDK.framework',
-  'ios/framework/AlibcTradeSDK/AlibcTradeBiz.framework',
-  'ios/framework/securityGuard/SGMain.framework',
-  'ios/framework/securityGuard/SGMiddleTier.framework',
-  'ios/framework/securityGuard/SGSecurityBody.framework',
-  'ios/framework/securityGuard/SGIndieKit.framework',
-  'ios/framework/securityGuard/SecurityGuardSDK.framework',
-  'ios/framework/securityGuard/SGNoCaptcha.framework',
-  'ios/framework/UTMini.framework',
-  'ios/framework/WindVane/WindVane.framework',
-  'ios/framework/WindVane/WindVaneBasic.framework',
-  'ios/framework/WindVane/WindVaneCore.framework',
-  'ios/framework/AliAuthSDK/AlibabaAuthExt.framework',
-  'ios/framework/AliAuthSDK/AlibabaAuthSDK.framework',
-  'ios/framework/AliAuthSDK/AlibabaAuthEntrance.framework',
-  'ios/AlipaySDK.framework'
-]
-  s.library = "c++", "z"
+  require 'find'
+  frameworks_root = 'ios/framework/'
+  frameworks = []
+
+  Find.find(frameworks_root) do |path|
+    frameworks.push(path) if path.end_with?('.framework')
+  end
+
+  frameworks.push('ios/AlipaySDK.framework')
+
+  s.vendored_frameworks = frameworks
+  
+  # s.vendored_frameworks = [
+  #   'ios/AliAuthSDK/AlibabaAuthEntrance.framework',
+  #   'ios/AliAuthSDK/AlibabaAuthExt.framework',
+  #   'ios/AliAuthSDK/AlibabaAuthSDK.framework',
+  #   'ios/AlibcTradeUltimateSDK/AlibcTradeBaseContainer.framework',
+  #   'ios/AlibcTradeUltimateSDK/AlibcTradeCommonSDK.framework',
+  #   'ios/AlibcTradeUltimateSDK/AlibcTradeContainer.framework',
+  #   'ios/AlibcTradeUltimateSDK/AlibcTradeUltimateBizSDK.framework',
+  #   'ios/AlibcTradeUltimateSDK/AlibcTradeUltimateSDK.framework',
+  #   'ios/AlibcTradeUltimateSDK/AlibcTradeWebViewContainer.framework',
+  #   'ios/AlibcTradeUltimateSDK/AlibcTrademiniAppContainer.framework',
+  #   'ios/AlibcTradeUltimateSDK/MunionBcAdSDK.framework',
+  #   'ios/Ariver/AriverApi.framework',
+  #   'ios/Ariver/AriverApp.framework',
+  #   'ios/Ariver/AriverAuth.framework',
+  #   'ios/Ariver/AriverConfig.framework',
+  #   'ios/Ariver/AriverDevice.framework',
+  #   'ios/Ariver/AriverDeviceCore.framework',
+  #   'ios/Ariver/AriverFileManager.framework',
+  #   'ios/Ariver/AriverKernel.framework',
+  #   'ios/Ariver/AriverLogger.framework',
+  #   'ios/Ariver/AriverResource.framework',
+  #   'ios/Ariver/AriverRuntime.framework',
+  #   'ios/Ariver/AriverSecurity.framework',
+  #   'ios/Ariver/AriverWebSocket.framework',
+  #   'ios/BCUserTrack/UT.framework',
+  #   'ios/BCUserTrack/UT_AppMonitor.framework',
+  #   'ios/BCUserTrack/UT_Common.framework',
+  #   'ios/BCUserTrack/UT_Core.framework',
+  #   'ios/DWInteractiveSDK/AliHADeviceEvaluation.framework',
+  #   'ios/DWInteractiveSDK/AliReachability.framework',
+  #   'ios/MunionBcAdSDK/MunionBcAdSDK.framework',
+  #   'ios/Triver/TriverAPI.framework',
+  #   'ios/Triver/TriverAppContainer.framework',
+  #   'ios/Triver/TriverCapability.framework',
+  #   'ios/Triver/TriverDebugTool.framework',
+  #   'ios/Triver/TriverLocalDebug.framework',
+  #   'ios/Triver/TriverRuntime.framework',
+  #   'ios/Triver/TriverVideo.framework',
+  #   'ios/UTDID/UTDID.framework',
+  #   'ios/WindMix/AliRemoteDebugInterface.framework',
+  #   'ios/WindMix/RiverLogger.framework',
+  #   'ios/WindMix/WindMix.framework',
+  #   'ios/WindVane/WindVane.framework',
+  #   'ios/WindVane/WindVaneBasic.framework',
+  #   'ios/WindVane/WindVaneCore.framework',
+  #   'ios/Windmill/WindmillTRiverKit.framework',
+  #   'ios/Windmill/WindmillWeaver.framework',
+  #   'ios/applink/AlibcLinkPartnerSDK.framework',
+  #   'ios/miniAppMediaSDK/AliWindmillImage.framework',
+  #   'ios/mtopSDK/MtopSDK.framework',
+  #   'ios/mtopSDK/mtopcoreopen.framework',
+  #   'ios/mtopSDK/mtopext.framework',
+  #   'ios/securityGuard/SGIndieKit.framework',
+  #   'ios/securityGuard/SGMain.framework',
+  #   'ios/securityGuard/SGMiddleTier.framework',
+  #   'ios/securityGuard/SGNoCaptcha.framework',
+  #   'ios/securityGuard/SGSecurityBody.framework',
+  #   'ios/securityGuard/SecurityGuardSDK.framework'
+  # ]
+  # 添加系统库依赖
+  s.library = "c++", "z", "icucore", "resolv"
   # ...
   # s.dependency "..."
 
