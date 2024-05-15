@@ -91,8 +91,10 @@ export default class Alipay {
     if (Platform.OS === 'android') {
       NativeModules.RNAlipay.OpenTB(callback)
     } else if (Platform.OS === 'ios') {
-      console.log('ios暂未支持')
-      NativeModules.RNAlipay.OpenTB()
+      NativeModules.RNAlipay.OpenTB().then(token => {
+        console.log('淘宝SDK授权token', token)
+        callback(token || null)
+      })
     }
   }
 
